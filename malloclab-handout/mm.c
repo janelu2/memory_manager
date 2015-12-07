@@ -58,7 +58,8 @@ team_t team = {
 #define PREV_BLKP(bp)   ((char *)(bp) - GET_SIZE(((char *)(bp) - DSIZE)))
 
 /* global variables */
-    char *heap_listp;
+    void *heap_listp;
+    void *largest = NULL;
 
 /* 
  * mm_init - initialize the malloc package.
@@ -128,18 +129,34 @@ void *mm_malloc(size_t size)
     return bp;
 }
 
+//implement best-fit search
 void *find_fit(size_t asize)
 {
     /* first-fit search */
-    void *bp;
+    void *bp = NULL;
+    void *tmp = NULL;
+    int max = 10000000000000000000000;
+    void *bestfit = NULL;
 
-    for (bp = heap_listp; GET_SIZE(HDRP(bp)) > 0; bp = NEXT_BLKP(bp)) {
-        if (!GET_ALLOC(HDRP(bp)) && (asize <= GET_SIZE(HDRP(bp)))) {
-            return bp;
+    if (largest != NULL) {
+        if (GET_SIZE(largest) < asize)
+            return NULL;
+        else if (GET_SIZE(largest) == asize) {
+            tmp = largest;
+            largest = NULL;
+            return tmp;
         }
     }
 
-    return NULL; /* no fit */
+    for (bp = heap_listp; GET_SIZE(HDRP(bp)) > 0; bp = NEXT_BLKP(bp)) {
+        if (GET_SIZE(HDRP(bp)) > 
+        if (GET_SIZE(HDRP(bp)) >= asize && GET_SIZE(HDRP(bp)) < max && GET_ALLOC(HDRP(bp)) == !GET_ALLOC(HDRP(bp))) {           
+            max = GET_SIZE(HDRP(bp));
+            bestfit = bp;
+        }
+    }
+
+    return bp; /* no fit */
 }
 
 void place(void *bp, size_t asize)
