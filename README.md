@@ -15,20 +15,11 @@ Main Files:
 *********
 Approach:
 *********
- * MALLOC: A dynamic memory allocator that maintains an area of a process's virtual 
- * memory known as the heap. In this approach, blocks are allocated by traversing 
- * an explicit, doubly linked list consisted of only free blocks to optimize search time. 
- * The first free block that will accomodate the requested size is chosen to be allocated.
- * FREE: When the program frees a block, the explicit free list will add that 
- * block to the head of its list using doubly linked list node insertion methods.
- * BLOCKS: The heap is 8-byte aligned. Each block begins with a header and ends
- * with a footer that holds information on the size of the block and if it is free.
- * To implement an explicit free list, each block also holds the address of the 
- * next and previous free block if it is free. 
- *      
- *      free block: [header|previous_free_block|next_free_block|some_data|footer]
- * allocated block: [header|-------------------some_data-----------------|footer]
- *                 
+ * MALLOC: A dynamic memory allocator that maintains an area of a process's virtual memory known as the heap. In this approach, blocks are allocated by traversing an explicit, doubly linked list consisted of only free blocks to optimize search time. The first free block that will accomodate the requested size is chosen to be allocated.
+ * FREE: When the program frees a block, the explicit free list will add that block to the head of its list using doubly linked list node insertion methods.
+ * BLOCKS: The heap is 8-byte aligned. Each block begins with a header and ends with a footer that holds information on the size of the block and if it is free. To implement an explicit free list, each block also holds the address of the next and previous free block if it is free. 
+  	-      free block: [header|previous_free_block|next_free_block|some_data|footer]
+	- allocated block: [header|-------------------some_data-----------------|footer]
  * O(K) time, where k is the number of free blocks in the free list.
 
 ***********
