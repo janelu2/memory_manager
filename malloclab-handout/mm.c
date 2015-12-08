@@ -135,28 +135,39 @@ void *find_fit(size_t asize)
     /* first-fit search */
     void *bp = NULL;
     void *tmp = NULL;
-    int max = 10000000000000000000000;
-    void *bestfit = NULL;
+    int best_fit = 1000000000;
+    void *best_fitp = NULL;
+    int max = 0; 
+    int curr_size = 0;
 
-    if (largest != NULL) {
-        if (GET_SIZE(largest) < asize)
+    //NEED TO make this to work
+    /*if (largest != NULL) {
+        if (GET_SIZE(HDRP(largest)) < asize)
             return NULL;
-        else if (GET_SIZE(largest) == asize) {
+        else if (GET_SIZE(HDRP(largest)) == asize) {
             tmp = largest;
             largest = NULL;
             return tmp;
         }
-    }
+    }*/
 
     for (bp = heap_listp; GET_SIZE(HDRP(bp)) > 0; bp = NEXT_BLKP(bp)) {
-        if (GET_SIZE(HDRP(bp)) > 
-        if (GET_SIZE(HDRP(bp)) >= asize && GET_SIZE(HDRP(bp)) < max && GET_ALLOC(HDRP(bp)) == !GET_ALLOC(HDRP(bp))) {           
-            max = GET_SIZE(HDRP(bp));
-            bestfit = bp;
+        if (!(GET_ALLOC(HDRP(bp)))) {
+            curr_size = GET_SIZE(HDRP(bp));
+            if (curr_size > max) {
+                max = curr_size;
+                //largest = bp;
+            }
+            if (curr_size >= asize) {           
+                if((curr_size - asize) < (best_fit - asize)) {
+                    best_fit = curr_size;
+                    best_fitp = bp;
+                }
+            }
         }
     }
 
-    return bp; /* no fit */
+    return best_fitp; 
 }
 
 void place(void *bp, size_t asize)
